@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   keywords:
     'lbs to kg, pounds to kilograms, unit converter, kg to lbs, weight conversion, mass converter, online converter, free tool',
   openGraph: {
-    title: 'Lbs to Kg | Pounds to Kilograms Converter Online',
+    title: 'Lbs to Kg',
     description:
       'Convert pounds (lbs) to kilograms (kg) and vice versa instantly with our free, accurate, and easy-to-use online unit converter.',
     url: 'https://lbstokg.org/',
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     description:
       'Convert pounds (lbs) to kilograms (kg) and vice versa instantly with our free, accurate, and easy-to-use online unit converter.',
     images: ['https://lbstokg.org/og-image.png'],
-    site: '@unitconverters',
+    site: '@lbstokg',
   },
   alternates: {
     canonical: 'https://lbstokg.org/',

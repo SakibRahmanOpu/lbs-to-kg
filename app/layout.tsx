@@ -23,6 +23,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Favicon */}
+        <link rel="icon" href="/favicon.png" />
+
         {/* Google Search Console Verification - REPLACE 'YOUR_VERIFICATION_CODE' */}
         <meta
           name="google-site-verification"
