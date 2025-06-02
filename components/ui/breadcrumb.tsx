@@ -52,7 +52,8 @@ const BreadcrumbLink = React.forwardRef<
     asChild?: boolean;
     href: string; // <-- Make href required
   }
->(({ asChild, className, href = '#', ...props }, ref) => {
+>(({ asChild, className, href, ...props }, ref) => {
+  if (!href) return null; // Do not render if href is not provided
   return (
     <Link
       ref={ref}
