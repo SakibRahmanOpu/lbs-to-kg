@@ -50,11 +50,13 @@ const BreadcrumbLink = React.forwardRef<
   HTMLAnchorElement,
   React.AnchorHTMLAttributes<HTMLAnchorElement> & {
     asChild?: boolean;
+    href: string; // <-- Make href required
   }
->(({ asChild, className, ...props }, ref) => {
+>(({ asChild, className, href = '#', ...props }, ref) => {
   return (
     <Link
       ref={ref}
+      href={href}
       className={cn('hover:text-foreground transition-colors', className)}
       {...props}
     />
