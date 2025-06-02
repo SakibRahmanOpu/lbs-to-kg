@@ -1,38 +1,41 @@
-// app/blog/[slug]/page.tsx
+import fs from 'fs/promises';
+import path from 'path';
 import { notFound } from 'next/navigation';
-import BlogSinglePage from '../why-unit-conversion-matters/page';
-import BlogSinglePage2 from '../top-5-unit-conversion-tips/page';
 
-// Map slugs to their corresponding blog post components
-const blogComponents: Record<string, React.FC> = {
-  'why-unit-conversion-matters': BlogSinglePage,
-  'top-5-unit-conversion-tips': BlogSinglePage2,
-};
-
-// --- Add this function ---
 export async function generateStaticParams() {
-  // Get all the keys (slugs) from your blogComponents map
-  const slugs = Object.keys(blogComponents);
-
-  // Map them to the format Next.js expects: [{ slug: '...' }, { slug: '...' }]
-  return slugs.map(slug => ({
-    slug: slug,
-  }));
+  const filePath = path.join(process.cwd(), 'app', 'blog-data.json');
+  const data = await fs.readFile(filePath, 'utf-8');
+  const blogs = JSON.parse(data);
+  return blogs.map((blog: any) => ({ slug: blog.id }));
 }
-// --- End of added function ---
 
-export default function BlogDynamicPage({
+async function getBlog(slug: string) {
+  const filePath = path.join(process.cwd(), 'app', 'blog-data.json');
+  const data = await fs.readFile(filePath, 'utf-8');
+  const blogs = JSON.parse(data);
+  return blogs.find((blog: any) => blog.id === slug);
+}
+
+export default async function BlogSinglePage({
   params,
 }: {
   params: { slug: string };
 }) {
-  const BlogComponent = blogComponents[params.slug];
-
-  // If the slug doesn't match any component, return 404
-  if (!BlogComponent) {
-    return notFound();
-  }
-
-  // Render the corresponding blog component
-  return <BlogComponent />;
+  const blog = await getBlog(params.slug);
+  if (!blog) return notFound();
+  return (
+    <main className="p-8 max-w-3xl mx-auto">
+      <h1 className="text-3xl font-bold mb-4 text-emerald-800">{blog.title}</h1>
+      <div className="bg-white shadow-lg rounded-lg p-6 text-gray-800">
+        <div className="mb-4 text-xs text-gray-500">
+          {new Date(blog.date).toLocaleDateString()}
+        </div>
+        {blog.content.split('\n').map((p: string, i: number) => (
+          <p className="mb-4" key={i}>
+            {p}
+          </p>
+        ))}
+      </div>
+    </main>
+  );
 }

@@ -1,54 +1,32 @@
+import fs from 'fs/promises';
+import path from 'path';
 import Link from 'next/link';
 
-const blogs = [
-  {
-    slug: 'why-unit-conversion-matters',
-    title: 'Why Unit Conversion Matters in Everyday Life',
-    summary:
-      'Discover how unit conversion impacts daily activities, from cooking to travel, and why accuracy is essential.',
-    date: '2025-06-01',
-  },
-  {
-    slug: 'top-5-unit-conversion-tips',
-    title: 'Top 5 Tips for Accurate Unit Conversion',
-    summary:
-      'Learn the best practices to avoid common mistakes and ensure precise conversions every time.',
-    date: '2025-05-28',
-  },
-  {
-    slug: 'digital-tools-for-unit-conversion',
-    title: 'The Best Digital Tools for Unit Conversion in 2025',
-    summary:
-      'Explore the latest apps and websites that make unit conversion fast, easy, and reliable.',
-    date: '2025-05-20',
-  },
-  {
-    slug: 'unit-conversion-in-science',
-    title: 'Unit Conversion in Science: Why It’s Critical',
-    summary:
-      'Understand the role of unit conversion in scientific research and how it ensures global collaboration.',
-    date: '2025-05-15',
-  },
-];
-
 export const metadata = {
-  title: 'Blog | UnitConverters.net',
+  title: 'Blog | LbstoKg.org',
   description:
     'Read expert articles about unit conversion, tips, tools, and its importance in daily life and science.',
   keywords:
-    'unit conversion blog, unit converter tips, best unit converter, science unit conversion, digital tools',
+    'unit conversion blog, lbs to kg, best unit converter, science unit conversion, digital tools',
 };
 
-export default function BlogPage() {
+async function getBlogs() {
+  const filePath = path.join(process.cwd(), 'app', 'blog-data.json');
+  const data = await fs.readFile(filePath, 'utf-8');
+  return JSON.parse(data);
+}
+
+export default async function BlogPage() {
+  const blogs = await getBlogs();
   return (
-    <main className="p-8 max-w-5xl mx-auto">
+    <main className="p-8 max-w-6xl mx-auto">
       <h1 className="text-4xl font-bold mb-8 text-emerald-800">
         Unit Conversion Blog
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {blogs.map(blog => (
+        {blogs.map((blog: any) => (
           <div
-            key={blog.slug}
+            key={blog.id}
             className="bg-white shadow-lg rounded-lg p-6 flex flex-col justify-between h-full"
           >
             <div>
@@ -62,7 +40,7 @@ export default function BlogPage() {
                 {new Date(blog.date).toLocaleDateString()}
               </span>
               <Link
-                href={`/blog/${blog.slug}`}
+                href={`/blog/${blog.id}`}
                 className="text-emerald-600 font-semibold hover:underline"
               >
                 Read More
