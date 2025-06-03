@@ -16,11 +16,7 @@ async function getBlog(slug: string) {
   return blogs.find((blog: any) => blog.id === slug);
 }
 
-export default async function BlogSinglePage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+export default async function BlogSinglePage({ params }: any) {
   const blog = await getBlog(params.slug);
   if (!blog) return notFound();
   return (

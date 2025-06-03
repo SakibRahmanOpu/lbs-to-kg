@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import { Weight, ArrowLeftRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -20,7 +20,7 @@ export default function Home() {
   const [isReversed, setIsReversed] = useState(false);
 
   // Convert pounds to kilograms
-  const convertPoundsToKilograms = () => {
+  const convertPoundsToKilograms = useCallback(() => {
     if (pounds === '') {
       setKilograms('');
       return;
@@ -29,10 +29,10 @@ export default function Home() {
     const poundsValue = parseFloat(pounds);
     const kgValue = weightConversions.lbsToKg(poundsValue);
     setKilograms(kgValue.toFixed(7));
-  };
+  }, [pounds]);
 
   // Convert kilograms to pounds
-  const convertKilogramsToPounds = () => {
+  const convertKilogramsToPounds = useCallback(() => {
     if (kilograms === '') {
       setPounds('');
       return;
@@ -41,7 +41,7 @@ export default function Home() {
     const kgValue = parseFloat(kilograms);
     const poundsValue = weightConversions.kgToLbs(kgValue);
     setPounds(poundsValue.toFixed(7));
-  };
+  }, [kilograms]);
 
   // Handle pounds input change
   const handlePoundsChange = (value: string) => {
@@ -81,13 +81,47 @@ export default function Home() {
   };
 
   // Auto-convert when either input changes
-  useState(() => {
-    if (activeInput === 'pounds' && pounds !== '') {
-      convertPoundsToKilograms();
-    } else if (activeInput === 'kilograms' && kilograms !== '') {
-      convertKilogramsToPounds();
+  useEffect(() => {
+    if (activeInput === 'pounds') {
+      if (pounds === '') {
+        setKilograms('');
+      } else {
+        convertPoundsToKilograms();
+      }
+    } else if (activeInput === 'kilograms') {
+      if (kilograms === '') {
+        setPounds('');
+      } else {
+        convertKilogramsToPounds();
+      }
     }
-  });
+  }, [
+    pounds,
+    kilograms,
+    activeInput,
+    convertPoundsToKilograms,
+    convertKilogramsToPounds,
+  ]);
+
+  // Helper for result text
+  const showResult = () => {
+    if (!isReversed && pounds !== '' && kilograms !== '') {
+      return `Result: ${pounds} pound${
+        parseFloat(pounds) === 1 ? '' : 's'
+      } = ${kilograms} kilogram${parseFloat(kilograms) === 1 ? '' : 's'}`;
+    }
+    if (isReversed && kilograms !== '' && pounds !== '') {
+      return `Result: ${kilograms} kilogram${
+        parseFloat(kilograms) === 1 ? '' : 's'
+      } = ${pounds} pound${parseFloat(pounds) === 1 ? '' : 's'}`;
+    }
+    // If both inputs are empty, clear the result
+    if ((pounds === '' && !isReversed) || (kilograms === '' && isReversed)) {
+      return '';
+    }
+    // If input is empty, output is also empty
+    return '';
+  };
 
   // Generate conversion table data
   const commonValues = [0.01, 0.1, 1, 2, 3, 5, 10, 20, 50, 100, 1000];
@@ -168,6 +202,12 @@ export default function Home() {
                     Clear
                   </Button>
                 </div>
+                {/* Live result text */}
+                {showResult() && (
+                  <div className="mt-4 text-center text-base font-medium text-emerald-700 bg-emerald-50 rounded p-2">
+                    {showResult()}
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
